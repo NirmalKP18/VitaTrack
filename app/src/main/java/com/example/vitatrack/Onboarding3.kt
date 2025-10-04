@@ -13,7 +13,7 @@ class Onboarding3 : AppCompatActivity() {
         val getStartedButton: Button = findViewById(R.id.getStartedButton)
 
         getStartedButton.setOnClickListener {
-            val intent = Intent(this, Login::class.java) // Change to HomeActivity if needed
+            val intent = Intent(this, LoginActivity::class.java) // Change to HomeActivity if needed
             startActivity(intent)
             finish()
         }
