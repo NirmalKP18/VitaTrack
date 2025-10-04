@@ -14,15 +14,17 @@ class LoginActivity : AppCompatActivity() {
         val createAccountText: TextView = findViewById(R.id.createAccountText)
         val loginButton: Button = findViewById(R.id.loginButton)
 
-        // Navigate to Signup screen when "Create new account" is clicked
+        // Go to Signup page
         createAccountText.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
-        // Login button (no action yet)
+        // Go to HomeActivity (main screen)
         loginButton.setOnClickListener {
-            // TODO: Add login functionality later
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish() // closes LoginActivity so user can't go back
         }
     }
 }
