@@ -10,7 +10,7 @@
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Habit Tracker"
+        android:text="Hydration Reminders"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -24,7 +24,7 @@
         android:id="@+id/subTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Track your daily habits like exercise, meditate, and steps"
+        android:text="Get notified to drink water and stay hydrated"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textColor="@color/black"
@@ -39,9 +39,9 @@
         android:id="@+id/onboardingImage"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:contentDescription="Habit Tracker Illustration"
+        android:src="@drawable/onboarding2_image"
+        android:contentDescription="Hydration Reminder Illustration"
         android:scaleType="fitCenter"
-        android:src="@drawable/onboarding1_image"
         android:layout_marginTop="40dp"
         app:layout_constraintTop_toBottomOf="@id/subTitleText"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,8 +60,7 @@
         android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toTopOf="@id/dotsLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cornerRadius="30dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Dots Indicator -->
     <LinearLayout
@@ -75,25 +74,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Active dot -->
+        <!-- First dot (inactive) -->
+        <View
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_margin="6dp"
+            android:background="@drawable/dot_inactive" />
+
+        <!-- Second dot (active) -->
         <View
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_margin="6dp"
             android:background="@drawable/dot_active" />
 
-        <!-- Inactive dots -->
-        <View
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_margin="6dp"
-            android:background="@drawable/dot_inactive" />
-
+        <!-- Third dot (inactive) -->
         <View
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_margin="6dp"
             android:background="@drawable/dot_inactive" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
