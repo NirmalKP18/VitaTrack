@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VitaTrack">
         <activity
+            android:name=".Login"
+            android:exported="false" />
+        <activity
             android:name=".Onboarding3"
             android:exported="false" />
         <activity
