@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@drawable/card_bg"
+    android:layout_marginBottom="8dp">
+
+    <!-- Habit completion checkbox -->
+    <CheckBox
+        android:id="@+id/habitCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Habit name -->
+    <TextView
+        android:id="@+id/habitName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Sample Habit"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginStart="8dp" />
+
+    <!-- Delete habit button -->
+    <ImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Delete habit" />
+</LinearLayout>
