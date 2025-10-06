@@ -1,6 +1,7 @@
 package com.example.vitatrack
 
 data class Habit(
-    var name: String,
-    var isCompleted: Boolean = false
+    val name: String,
+    var isCompleted: Boolean = false,
+    val targetTime: String // example: "07:30 AM"
 )

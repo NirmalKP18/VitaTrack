@@ -3,101 +3,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:fillViewport="true">
+    android:padding="16dp"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
 
-        <!-- Header -->
+        <!-- App logo + name -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:gravity="center_vertical">
 
             <ImageView
-                android:id="@+id/appLogo"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/vitatrack_logo"
-                android:contentDescription="VitaTrack Logo" />
+                android:layout_marginEnd="8dp"
+                android:contentDescription="App logo" />
 
             <TextView
-                android:id="@+id/appName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="VitaTrack"
-                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginStart="8dp" />
+                android:textSize="20sp"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <!-- Greeting -->
         <TextView
             android:id="@+id/greetingText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome back!"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:text="Welcome back, User 👋"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="12dp" />
 
         <!-- Habit Summary -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/card_bg"
-            android:padding="16dp"
-            android:layout_marginBottom="20dp">
+            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/card_bg">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Habit Summary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_marginBottom="8dp" />
+                android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/habitSummaryText"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/recentHabitsContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="You have 0 habits yet."
-                android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:orientation="vertical"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
 
-        <!-- Mood Chart Section -->
+        <!-- Mood Chart -->
         <LinearLayout
-            android:id="@+id/chartSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/card_bg"
-            android:padding="16dp">
+            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/card_bg">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mood Statistics"
                 android:textStyle="bold"
-                android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_marginBottom="10dp" />
+                android:textSize="16sp" />
 
             <com.example.vitatrack.MoodChartView
                 android:id="@+id/moodChartView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="220dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
+        <!-- Extra spacing at bottom -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
     </LinearLayout>
 </ScrollView>

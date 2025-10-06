@@ -1,20 +1,20 @@
 package com.example.vitatrack
 
 import android.app.AlertDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
 
 class HabitFragment : Fragment() {
 
@@ -48,34 +48,84 @@ class HabitFragment : Fragment() {
         return view
     }
 
+    // --------------------------------------------------
+    // 1️⃣ Show dialog to add a habit
+    // --------------------------------------------------
     private fun showAddHabitDialog() {
-        val editText = EditText(requireContext())
-        editText.hint = "Enter habit name"
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_habit, null)
+
+        val inputName = dialogView.findViewById<EditText>(R.id.inputHabitName)
+        val btnPickTime = dialogView.findViewById<Button>(R.id.btnPickTime)
+        val timeText = dialogView.findViewById<TextView>(R.id.selectedTime)
+
+        var selectedTime = ""
+
+        // ⏰ Pick time
+        btnPickTime.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            TimePickerDialog(requireContext(), { _, h, m ->
+                val formatted = String.format(
+                    "%02d:%02d %s",
+                    if (h % 12 == 0) 12 else h % 12,
+                    m,
+                    if (h < 12) "AM" else "PM"
+                )
+                selectedTime = formatted
+                timeText.text = "Selected: $formatted"
+            }, hour, minute, false).show()
+        }
 
         AlertDialog.Builder(requireContext())
-            .setTitle("New Habit")
-            .setView(editText)
-            .setPositiveButton("Add") { _, _ ->
-                val habitName = editText.text.toString().trim()
-                if (habitName.isNotEmpty()) {
-                    habits.add(Habit(habitName))
-                    saveHabits()
-                    updateProgress()
-                    adapter.notifyDataSetChanged()
+            .setTitle("Add New Habit")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val name = inputName.text.toString().trim()
+                if (name.isNotEmpty() && selectedTime.isNotEmpty()) {
+                    addHabit(name, selectedTime)
                 } else {
-                    Toast.makeText(requireContext(), "Enter a valid name", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
+    // --------------------------------------------------
+    // 2️⃣ Add habit + save + refresh home fragment
+    // --------------------------------------------------
+    private fun addHabit(name: String, time: String) {
+        val newHabit = Habit(name = name, targetTime = time)
+        habits.add(0, newHabit)
+        saveHabits()
+
+        adapter.notifyItemInserted(0)
+        updateProgress()
+
+        // 🔄 Refresh HomeFragment to show new habit immediately
+        requireActivity().supportFragmentManager.fragments.forEach {
+            if (it is HomeFragment) {
+                it.onResume()
+            }
+        }
+    }
+
+    // --------------------------------------------------
+    // 3️⃣ Toggle habit status
+    // --------------------------------------------------
     private fun toggleHabit(position: Int, isChecked: Boolean) {
         habits[position].isCompleted = isChecked
         saveHabits()
         updateProgress()
     }
 
+    // --------------------------------------------------
+    // 4️⃣ Delete habit
+    // --------------------------------------------------
     private fun deleteHabit(position: Int) {
         habits.removeAt(position)
         saveHabits()
@@ -83,6 +133,9 @@ class HabitFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    // --------------------------------------------------
+    // 5️⃣ Progress Bar update
+    // --------------------------------------------------
     private fun updateProgress() {
         if (habits.isEmpty()) {
             progressBar.progress = 0
@@ -93,6 +146,9 @@ class HabitFragment : Fragment() {
         progressBar.progress = progress
     }
 
+    // --------------------------------------------------
+    // 6️⃣ Save and Load
+    // --------------------------------------------------
     private fun saveHabits() {
         val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         val editor = prefs.edit()
