@@ -1,14 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     android:background="@color/white">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Emoji selector row -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mood Journal"
-        android:textSize="22sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnHappy"
+            android:text="😊"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnNeutral"
+            android:text="😐"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnSad"
+            android:text="😢"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnAngry"
+            android:text="😡"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnSleepy"
+            android:text="😴"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Note input -->
+    <EditText
+        android:id="@+id/inputNote"
+        android:hint="Add a short note about your mood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/input_field_bg"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Save button -->
+    <Button
+        android:id="@+id/btnSaveMood"
+        android:text="Save Mood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp" />
+
+    <!-- RecyclerView for mood history -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMoodHistory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never" />
+
+</LinearLayout>
