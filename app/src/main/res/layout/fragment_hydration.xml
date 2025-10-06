@@ -1,14 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="20dp"
+    android:gravity="center_horizontal">
 
     <TextView
+        android:id="@+id/txtHydrationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hydration Reminders"
+        android:text="Hydration Tracker"
         android:textSize="22sp"
+        android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/txtWaterCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 / 8 glasses"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp" />
+
+    <ProgressBar
+        android:id="@+id/waterProgressBar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="0"
+        android:max="8"
+        android:progressTint="@color/orange"
+        android:backgroundTint="#EFEFEF"
+        android:rotation="-90"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnAddGlass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Glass"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp" />
+
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset Count"
+        android:backgroundTint="#C6C6C6"
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/btnStartReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Reminder"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/teal_700" />
+
+    <Button
+        android:id="@+id/btnStopReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop Reminder"
+        android:backgroundTint="@color/red" />
+
+
+</LinearLayout>

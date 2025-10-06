@@ -8,5 +8,9 @@
     <color name="card_background">#FFFFFF</color>
     <color name="text_gray">#808080</color>
 
+    <color name="teal_700">#00796B</color> <!-- a calm teal green -->
+    <color name="red">#E53935</color> <!-- a bright red for Stop button -->
+
+
 
 </resources>
