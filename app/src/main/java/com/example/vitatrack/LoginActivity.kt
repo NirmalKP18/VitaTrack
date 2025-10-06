@@ -3,7 +3,9 @@ package com.example.vitatrack
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -11,20 +13,40 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val createAccountText: TextView = findViewById(R.id.createAccountText)
-        val loginButton: Button = findViewById(R.id.loginButton)
+        val usernameField = findViewById<EditText>(R.id.inputUsername)
+        val passwordField = findViewById<EditText>(R.id.inputPassword)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val signupText = findViewById<TextView>(R.id.textCreateAccount)
 
-        // Go to Signup page
-        createAccountText.setOnClickListener {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
+        btnLogin.setOnClickListener {
+            val inputUsername = usernameField.text.toString().trim()
+            val inputPassword = passwordField.text.toString().trim()
+
+            if (inputUsername.isEmpty() || inputPassword.isEmpty()) {
+                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val prefs = getSharedPreferences("user_prefs", MODE_PRIVATE)
+            val editor = prefs.edit()
+            editor.putBoolean("isLoggedIn", true)
+            editor.putString("username", inputUsername)
+            editor.apply()
+
+            val savedUsername = prefs.getString("username", null)
+            val savedPassword = prefs.getString("password", null)
+
+            if (inputUsername == savedUsername && inputPassword == savedPassword) {
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // Go to HomeActivity (main screen)
-        loginButton.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish() // closes LoginActivity so user can't go back
+        signupText.setOnClickListener {
+            startActivity(Intent(this, SignupActivity::class.java))
         }
     }
 }
