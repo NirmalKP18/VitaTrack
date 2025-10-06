@@ -2,86 +2,82 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/appLogo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/vitatrack_logo"
+                android:contentDescription="VitaTrack Logo" />
+
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VitaTrack"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Greeting -->
         <TextView
             android:id="@+id/greetingText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Good Morning!"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/dateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Monday, Oct 7, 2025"
-            android:textSize="16sp"
+            android:text="Welcome back!"
             android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:layout_marginBottom="16dp" />
 
-        <!-- Habit summary -->
+        <!-- Habit Summary -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_bg"
             android:padding="16dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="20dp">
 
             <TextView
+                android:text="Habit Summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Daily Habit Progress"
                 android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:layout_marginBottom="8dp" />
 
             <TextView
+                android:id="@+id/habitSummaryText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/habitSummary"
-                android:text="3 of 5 habits completed"
-                android:textColor="@color/black"
-                android:layout_marginTop="6dp" />
+                android:text="You have 0 habits yet."
+                android:textSize="16sp"
+                android:textColor="@color/black" />
         </LinearLayout>
 
-        <!-- Hydration summary -->
+        <!-- Mood Chart Section -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_bg"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hydration Status"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/hydrationSummary"
-                android:text="4 of 8 glasses today"
-                android:textColor="@color/black"
-                android:layout_marginTop="6dp" />
-        </LinearLayout>
-
-        <!-- Mood summary -->
-        <LinearLayout
+            android:id="@+id/chartSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -91,18 +87,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today’s Mood"
+                android:text="Mood Statistics"
                 android:textStyle="bold"
+                android:textSize="18sp"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:layout_marginBottom="10dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/moodSummary"
-                android:text="😊 Happy"
-                android:textColor="@color/black"
-                android:layout_marginTop="6dp" />
+            <com.example.vitatrack.MoodChartView
+                android:id="@+id/moodChartView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
