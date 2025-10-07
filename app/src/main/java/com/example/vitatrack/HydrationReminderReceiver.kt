@@ -12,50 +12,48 @@ import androidx.core.app.NotificationManagerCompat
 
 class HydrationReminderReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent?) {
-        val channelId = "hydration_channel"
-        val notificationId = 1
+    companion object {
+        const val CHANNEL_ID = "hydration_channel"
+        const val NOTIFICATION_ID = 1001
+    }
 
-        // ✅ Create Notification Channel (only for Android 8.0+)
+    override fun onReceive(context: Context, intent: Intent?) {
+
+        //  Create a Notification Channel (for Android 8+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
-                channelId,
+                CHANNEL_ID,
                 "Hydration Reminders",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Reminds you to drink water regularly."
+                description = "Reminds you to drink water regularly"
             }
-            manager.createNotificationChannel(channel)
+
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.createNotificationChannel(channel)
         }
 
-        // ✅ Intent to open HomeActivity when user clicks the notification
-        val openAppIntent = Intent(context, HomeActivity::class.java)
+        //  Intent to reopen the app (Home screen)
+        val openApp = Intent(context, HomeActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
-            openAppIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            openApp,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // ✅ Build notification
-        val notification = NotificationCompat.Builder(context, channelId)
+        //  Build the notification
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_water)
             .setContentTitle("Stay Hydrated 💧")
             .setContentText("Time to drink a glass of water!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
             .build()
 
-        // ✅ Permission check for Android 13+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permission = android.Manifest.permission.POST_NOTIFICATIONS
-            if (context.checkSelfPermission(permission) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                NotificationManagerCompat.from(context).notify(notificationId, notification)
-            }
-        } else {
-            NotificationManagerCompat.from(context).notify(notificationId, notification)
-        }
+        //  Show it
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+
     }
 }

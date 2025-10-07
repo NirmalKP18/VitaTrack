@@ -17,7 +17,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        // ✅ Request POST_NOTIFICATIONS permission on Android 13+
+        //  Request POST_NOTIFICATIONS permission on Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (ContextCompat.checkSelfPermission(this, permission)
@@ -27,9 +27,10 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
-        // ✅ Default screen
+
+        //  Default screen
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
             bottomNav.selectedItemId = R.id.nav_home
@@ -53,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
             .commit()
     }
 
-    // ✅ Permission launcher for notifications
+    //  Permission launcher for notifications
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {

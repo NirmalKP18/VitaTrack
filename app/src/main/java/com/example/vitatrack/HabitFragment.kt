@@ -49,7 +49,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 1️⃣ Show dialog to add a habit
+    //  Show dialog to add a habit
     // --------------------------------------------------
     private fun showAddHabitDialog() {
         val dialogView = LayoutInflater.from(requireContext())
@@ -61,7 +61,7 @@ class HabitFragment : Fragment() {
 
         var selectedTime = ""
 
-        // ⏰ Pick time
+        // Pick time
         btnPickTime.setOnClickListener {
             val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -96,7 +96,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 2️⃣ Add habit + save + refresh home fragment
+    //  Add habit + save + refresh home fragment
     // --------------------------------------------------
     private fun addHabit(name: String, time: String) {
         val newHabit = Habit(name = name, targetTime = time)
@@ -106,7 +106,7 @@ class HabitFragment : Fragment() {
         adapter.notifyItemInserted(0)
         updateProgress()
 
-        // 🔄 Refresh HomeFragment to show new habit immediately
+        //  Refresh HomeFragment to show new habit immediately
         requireActivity().supportFragmentManager.fragments.forEach {
             if (it is HomeFragment) {
                 it.onResume()
@@ -115,7 +115,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 3️⃣ Toggle habit status
+    //  Toggle habit status
     // --------------------------------------------------
     private fun toggleHabit(position: Int, isChecked: Boolean) {
         habits[position].isCompleted = isChecked
@@ -124,7 +124,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 4️⃣ Delete habit
+    //  Delete habit
     // --------------------------------------------------
     private fun deleteHabit(position: Int) {
         habits.removeAt(position)
@@ -134,7 +134,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 5️⃣ Progress Bar update
+    //  Progress Bar update
     // --------------------------------------------------
     private fun updateProgress() {
         if (habits.isEmpty()) {
@@ -147,7 +147,7 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    // 6️⃣ Save and Load
+    //  Save and Load
     // --------------------------------------------------
     private fun saveHabits() {
         val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)

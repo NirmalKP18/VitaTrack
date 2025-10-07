@@ -32,7 +32,7 @@ class MoodFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // ✅ Clean correct syntax (no named args)
+        //  Clean correct syntax (no named args)
         val view = inflater.inflate(R.layout.fragment_mood, container, false)
 
         // Initialize views

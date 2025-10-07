@@ -11,6 +11,10 @@
     <color name="teal_700">#00796B</color> <!-- a calm teal green -->
     <color name="red">#E53935</color> <!-- a bright red for Stop button -->
 
+    <!-- Base app palette -->
+    <color name="primary">#06B5D2</color>          <!-- Aqua blue -->
+    <color name="darker_gray">#757575</color>      <!-- For reset button -->
 
-
+    <!-- Backgrounds / gradients (optional) -->
+    <color name="cream_light">#FFF9F0</color>
 </resources>
