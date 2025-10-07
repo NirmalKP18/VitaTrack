@@ -13,14 +13,14 @@
         <!-- App Logo -->
         <ImageView
             android:id="@+id/appLogo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/vitatrack_logo"
-            android:contentDescription="VitaTrack Logo"
+            android:layout_width="215dp"
+            android:layout_height="242dp"
             android:layout_marginTop="60dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="VitaTrack Logo"
+            android:src="@drawable/vitatrack_logo"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Username Field -->
         <EditText

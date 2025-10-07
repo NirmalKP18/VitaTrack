@@ -37,15 +37,15 @@
     <!-- Center Image -->
     <ImageView
         android:id="@+id/onboardingImage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:src="@drawable/onboarding2_image"
+        android:layout_width="360dp"
+        android:layout_height="393dp"
+        android:layout_marginTop="40dp"
         android:contentDescription="Hydration Reminder Illustration"
         android:scaleType="fitCenter"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/subTitleText"
+        android:src="@drawable/onboarding2_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/subTitleText" />
 
     <!-- Next Button -->
     <Button
