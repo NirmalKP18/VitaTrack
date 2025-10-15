@@ -1,6 +1,5 @@
 package com.example.vitatrack
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.example.vitatrack.data.MoodEntry
+import com.example.vitatrack.viewmodel.MoodViewModel
 
 class MoodFragment : Fragment() {
 
@@ -23,16 +21,15 @@ class MoodFragment : Fragment() {
     private lateinit var inputNote: EditText
     private lateinit var btnSaveMood: Button
     private lateinit var adapter: MoodAdapter
-    private val moodList = mutableListOf<MoodEntry>()
     private var selectedEmoji: String? = null
-    private val prefsName = "mood_data"
+    
+    private val viewModel: MoodViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //  Clean correct syntax (no named args)
         val view = inflater.inflate(R.layout.fragment_mood, container, false)
 
         // Initialize views
@@ -58,18 +55,40 @@ class MoodFragment : Fragment() {
 
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = MoodAdapter(moodList)
+        adapter = MoodAdapter(mutableListOf())
         recyclerView.adapter = adapter
 
-        // Save button
+        // Setup observers and click listeners
+        setupObservers()
+        setupClickListeners()
+
+        return view
+    }
+    
+    private fun setupObservers() {
+        // Observe mood entries
+        viewModel.moodEntries.observe(viewLifecycleOwner, Observer { entries ->
+            adapter.updateMoodEntries(entries)
+        })
+        
+        // Observe loading state
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            // You can show/hide loading indicator here
+        })
+        
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearErrorMessage()
+            }
+        })
+    }
+    
+    private fun setupClickListeners() {
         btnSaveMood.setOnClickListener {
             saveMood()
         }
-
-        // Load saved moods
-        loadMoods()
-
-        return view
     }
 
     // Highlight the selected emoji
@@ -87,39 +106,24 @@ class MoodFragment : Fragment() {
         }
 
         val note = inputNote.text.toString().trim()
-        val date = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault()).format(Date())
-
-        val newEntry = MoodEntry(selectedEmoji!!, note, date)
-        moodList.add(0, newEntry) // add new entry to top
-        adapter.notifyItemInserted(0)
-        recyclerView.scrollToPosition(0)
-
+        
+        viewModel.addMoodEntry(selectedEmoji!!, note)
+        
+        // Clear input and reset selection
         inputNote.text.clear()
         selectedEmoji = null
-
-        saveMoodsToPrefs()
-        Toast.makeText(requireContext(), "Mood saved!", Toast.LENGTH_SHORT).show()
-    }
-
-    // Save moods to SharedPreferences as JSON
-    private fun saveMoodsToPrefs() {
-        val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        val json = Gson().toJson(moodList)
-        editor.putString("mood_list", json)
-        editor.apply()
-    }
-
-    // Load saved moods from SharedPreferences
-    private fun loadMoods() {
-        val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val json = prefs.getString("mood_list", null)
-        if (json != null) {
-            val type = object : TypeToken<MutableList<MoodEntry>>() {}.type
-            val savedList: MutableList<MoodEntry> = Gson().fromJson(json, type)
-            moodList.clear()
-            moodList.addAll(savedList)
-            adapter.notifyDataSetChanged()
+        
+        // Reset emoji button highlights
+        val btnHappy = view?.findViewById<Button>(R.id.btnHappy)
+        val btnNeutral = view?.findViewById<Button>(R.id.btnNeutral)
+        val btnSad = view?.findViewById<Button>(R.id.btnSad)
+        val btnAngry = view?.findViewById<Button>(R.id.btnAngry)
+        val btnSleepy = view?.findViewById<Button>(R.id.btnSleepy)
+        val emojiButtons = listOfNotNull(btnHappy, btnNeutral, btnSad, btnAngry, btnSleepy)
+        if (emojiButtons.isNotEmpty()) {
+            highlightSelectedEmoji(emojiButtons, emojiButtons[0]) // Reset to default state
         }
+        
+        Toast.makeText(requireContext(), "Mood saved!", Toast.LENGTH_SHORT).show()
     }
 }

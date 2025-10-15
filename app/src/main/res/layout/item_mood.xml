@@ -3,52 +3,102 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
     android:backgroundTint="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- Emoji -->
-        <TextView
-            android:id="@+id/textEmoji"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:textSize="26sp"
-            android:text="😊" />
-
-        <!-- Mood details -->
+        <!-- Main mood row -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <!-- Emoji -->
             <TextView
-                android:id="@+id/textNote"
+                android:id="@+id/textEmoji"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textSize="32sp"
+                android:text="😊"
+                android:background="@drawable/emoji_background"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Mood details -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Feeling good today!"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:maxLines="2" />
+
+                <!-- Date and time row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:id="@+id/textDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Oct 8, 2025"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_gray" />
+
+                    <TextView
+                        android:id="@+id/textTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10:30 AM"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_gray"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Mood score -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Feeling good today!"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:maxLines="2" />
+                android:orientation="vertical"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/textDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Oct 8, 2025 10:30 AM"
-                android:textSize="13sp"
-                android:textColor="#808080"
-                android:layout_marginTop="4dp" />
+                <TextView
+                    android:id="@+id/moodScoreText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="★★★★☆"
+                    android:textSize="14sp"
+                    android:textColor="@color/orange"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Score"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_gray"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

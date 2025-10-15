@@ -2,18 +2,19 @@ package com.example.vitatrack
 
 import android.app.AlertDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vitatrack.data.Habit
+import com.example.vitatrack.viewmodel.HabitViewModel
 import com.google.android.material.button.MaterialButton
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class HabitFragment : Fragment() {
@@ -22,8 +23,9 @@ class HabitFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var btnAddHabit: MaterialButton
     private lateinit var adapter: HabitAdapter
-    private val habits = mutableListOf<Habit>()
-    private val prefsName = "habits_data"
+    private lateinit var progressText: TextView
+    
+    private val viewModel: HabitViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,18 +36,61 @@ class HabitFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerHabits)
         progressBar = view.findViewById(R.id.progressBar)
         btnAddHabit = view.findViewById(R.id.btnAddHabit)
+        progressText = view.findViewById(R.id.progressText)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = HabitAdapter(habits, ::deleteHabit, ::toggleHabit)
+        adapter = HabitAdapter(mutableListOf(), ::deleteHabit, ::toggleHabit)
         recyclerView.adapter = adapter
 
-        loadHabits()
+        setupObservers()
+        setupClickListeners()
 
+        return view
+    }
+    
+    private fun setupObservers() {
+        // Observe today's habits
+        viewModel.todayHabits.observe(viewLifecycleOwner, Observer { habits ->
+            adapter.updateHabits(habits)
+        })
+        
+        // Observe progress
+        viewModel.progressPercentage.observe(viewLifecycleOwner, Observer { percentage ->
+            progressBar.progress = percentage
+            updateProgressText(percentage)
+        })
+        
+        // Observe loading state
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            // You can show/hide loading indicator here
+        })
+        
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearErrorMessage()
+            }
+        })
+    }
+    
+    private fun setupClickListeners() {
         btnAddHabit.setOnClickListener {
             showAddHabitDialog()
         }
-
-        return view
+    }
+    
+    private fun updateProgressText(percentage: Int) {
+        val completed = viewModel.todayCompletedCount.value ?: 0
+        val total = viewModel.todayTotalCount.value ?: 0
+        
+        progressText.text = when {
+            total == 0 -> "No habits added yet"
+            percentage == 100 -> "🎉 All habits completed today! Great job!"
+            percentage >= 60 -> "Almost there! Keep it up 💪 ($completed/$total)"
+            percentage > 0 -> "Good start! You've completed $completed of $total"
+            else -> "Let's start completing your habits today!"
+        }
     }
 
     // --------------------------------------------------
@@ -85,7 +130,8 @@ class HabitFragment : Fragment() {
             .setPositiveButton("Save") { _, _ ->
                 val name = inputName.text.toString().trim()
                 if (name.isNotEmpty() && selectedTime.isNotEmpty()) {
-                    addHabit(name, selectedTime)
+                    viewModel.addHabit(name, selectedTime)
+                    Toast.makeText(requireContext(), "Habit added successfully!", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
                         .show()
@@ -96,77 +142,30 @@ class HabitFragment : Fragment() {
     }
 
     // --------------------------------------------------
-    //  Add habit + save + refresh home fragment
-    // --------------------------------------------------
-    private fun addHabit(name: String, time: String) {
-        val newHabit = Habit(name = name, targetTime = time)
-        habits.add(0, newHabit)
-        saveHabits()
-
-        adapter.notifyItemInserted(0)
-        updateProgress()
-
-        //  Refresh HomeFragment to show new habit immediately
-        requireActivity().supportFragmentManager.fragments.forEach {
-            if (it is HomeFragment) {
-                it.onResume()
-            }
-        }
-    }
-
-    // --------------------------------------------------
     //  Toggle habit status
     // --------------------------------------------------
     private fun toggleHabit(position: Int, isChecked: Boolean) {
-        habits[position].isCompleted = isChecked
-        saveHabits()
-        updateProgress()
+        val habit = adapter.getHabitAt(position)
+        if (habit != null) {
+            viewModel.toggleHabitCompletion(habit)
+        }
     }
 
     // --------------------------------------------------
     //  Delete habit
     // --------------------------------------------------
     private fun deleteHabit(position: Int) {
-        habits.removeAt(position)
-        saveHabits()
-        updateProgress()
-        adapter.notifyDataSetChanged()
-    }
-
-    // --------------------------------------------------
-    //  Progress Bar update
-    // --------------------------------------------------
-    private fun updateProgress() {
-        if (habits.isEmpty()) {
-            progressBar.progress = 0
-            return
-        }
-        val completed = habits.count { it.isCompleted }
-        val progress = (completed * 100) / habits.size
-        progressBar.progress = progress
-    }
-
-    // --------------------------------------------------
-    //  Save and Load
-    // --------------------------------------------------
-    private fun saveHabits() {
-        val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        val json = Gson().toJson(habits)
-        editor.putString("habit_list", json)
-        editor.apply()
-    }
-
-    private fun loadHabits() {
-        val prefs = requireContext().getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val json = prefs.getString("habit_list", null)
-        if (json != null) {
-            val type = object : TypeToken<MutableList<Habit>>() {}.type
-            val savedList: MutableList<Habit> = Gson().fromJson(json, type)
-            habits.clear()
-            habits.addAll(savedList)
-            adapter.notifyDataSetChanged()
-            updateProgress()
+        val habit = adapter.getHabitAt(position)
+        if (habit != null) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Delete Habit")
+                .setMessage("Are you sure you want to delete '${habit.name}'?")
+                .setPositiveButton("Delete") { _, _ ->
+                    viewModel.deleteHabit(habit)
+                    Toast.makeText(requireContext(), "Habit deleted", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
     }
 }

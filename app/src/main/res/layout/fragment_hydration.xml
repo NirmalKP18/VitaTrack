@@ -4,82 +4,175 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@android:color/white"
-    android:padding="20dp">
+    android:background="@color/light_gray"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <!-- Water Fill Circle -->
+        <!-- Today's Progress Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/card_bg"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's Hydration"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Water Fill Circle -->
+            <View
+                android:id="@+id/waterFillView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@color/primary"
+                android:scaleY="0"
+                android:pivotY="1"
+                android:layout_gravity="center"
+                android:clipToOutline="true"
+                android:backgroundTint="@color/primary"
+                android:backgroundTintMode="src_in"
+                android:elevation="6dp" />
+
+            <!-- Progress Text -->
+            <TextView
+                android:id="@+id/textProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0ml / 2000ml"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/black" />
+
+            <!-- Progress Percentage -->
+            <TextView
+                android:id="@+id/progressPercentageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/primary" />
+
+            <!-- Goal Text -->
+            <TextView
+                android:id="@+id/goalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Goal: 8 glasses (2000ml)"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/text_gray" />
+        </LinearLayout>
+
+        <!-- Quick Actions Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/card_bg"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Add Glass Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddGlass"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Add Glass 💧"
+                android:textSize="16sp"
+                android:backgroundTint="@color/primary"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp"
+                app:cornerRadius="28dp"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconGravity="textStart" />
+
+            <!-- Reset Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReset"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Reset Progress"
+                android:textSize="14sp"
+                android:backgroundTint="@color/darker_gray"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp"
+                app:cornerRadius="24dp" />
+        </LinearLayout>
+
+        <!-- Reminder Settings Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/card_bg"
+            android:elevation="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reminder Settings"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Set Reminder Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSetReminder"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Set Reminder ⏰"
+                android:textSize="14sp"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp"
+                app:cornerRadius="24dp" />
+
+            <!-- Cancel Reminder Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelReminder"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Cancel Reminder"
+                android:textSize="14sp"
+                android:backgroundTint="@color/red"
+                android:textColor="@android:color/white"
+                app:cornerRadius="24dp" />
+        </LinearLayout>
+
+        <!-- Extra spacing at bottom -->
         <View
-            android:id="@+id/waterFillView"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:background="@color/primary"
-            android:scaleY="0"
-            android:pivotY="1"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center"
-            android:clipToOutline="true"
-            android:backgroundTint="@color/primary"
-            android:backgroundTintMode="src_in"
-            android:elevation="4dp" />
-
-        <!-- Progress Text -->
-        <TextView
-            android:id="@+id/textProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 / 8 glasses"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:textColor="@android:color/black" />
-
-        <!-- Buttons -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddGlass"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Glass"
-            android:backgroundTint="@color/orange"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            app:cornerRadius="28dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnReset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reset Progress"
-            android:backgroundTint="@color/darker_gray"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            app:cornerRadius="28dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSetReminder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Set Reminder"
-            android:backgroundTint="@color/primary"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            app:cornerRadius="28dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancelReminder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cancel Reminder"
-            android:backgroundTint="@color/red"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            app:cornerRadius="28dp" />
-
+            android:layout_height="40dp" />
     </LinearLayout>
 </ScrollView>

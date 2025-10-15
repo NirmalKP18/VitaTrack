@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.example.vitatrack.viewmodel.HydrationViewModel
 import com.google.android.material.button.MaterialButton
 
 class HydrationFragment : Fragment() {
@@ -21,9 +24,10 @@ class HydrationFragment : Fragment() {
     private lateinit var btnReset: MaterialButton
     private lateinit var btnSetReminder: MaterialButton
     private lateinit var btnCancelReminder: MaterialButton
+    private lateinit var goalText: TextView
+    private lateinit var progressPercentageText: TextView
 
-    private var currentCount = 0
-    private val goal = 8
+    private val viewModel: HydrationViewModel by viewModels()
 
     companion object {
         private const val REQUEST_CODE_REMINDER = 4242
@@ -41,21 +45,55 @@ class HydrationFragment : Fragment() {
         btnReset = view.findViewById(R.id.btnReset)
         btnSetReminder = view.findViewById(R.id.btnSetReminder)
         btnCancelReminder = view.findViewById(R.id.btnCancelReminder)
+        goalText = view.findViewById(R.id.goalText)
+        progressPercentageText = view.findViewById(R.id.progressPercentageText)
 
+        setupObservers()
+        setupClickListeners()
+
+        return view
+    }
+    
+    private fun setupObservers() {
+        // Observe today's total hydration
+        viewModel.todayTotalHydration.observe(viewLifecycleOwner, Observer { total ->
+            updateUI()
+        })
+        
+        // Observe user settings for daily goal
+        viewModel.userSettings.observe(viewLifecycleOwner, Observer { settings ->
+            updateUI()
+        })
+        
+        // Observe loading state
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            // You can show/hide loading indicator here
+        })
+        
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearErrorMessage()
+            }
+        })
+    }
+    
+    private fun setupClickListeners() {
         btnAdd.setOnClickListener { addGlass() }
         btnReset.setOnClickListener { resetProgress() }
         btnSetReminder.setOnClickListener { scheduleHydrationReminderInOneMinute() }
         btnCancelReminder.setOnClickListener { cancelHydrationReminder() }
-
-        updateUI()
-        return view
     }
 
     //  Add glass logic with animation
     private fun addGlass() {
-        if (currentCount < goal) {
-            currentCount++
-            updateUI()
+        val total = viewModel.todayTotalHydration.value ?: 0
+        val goal = viewModel.userSettings.value?.dailyWaterGoalMl ?: 2000
+        
+        if (total < goal) {
+            viewModel.addGlass() // Add 250ml (standard glass)
+            Toast.makeText(requireContext(), "Added 250ml! 💧", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "Goal reached! 🎉", Toast.LENGTH_SHORT).show()
         }
@@ -63,16 +101,55 @@ class HydrationFragment : Fragment() {
 
     //  Reset progress
     private fun resetProgress() {
-        currentCount = 0
-        updateUI()
+        // Note: In a real app, you might want to ask for confirmation
+        // For now, we'll just show a message since we don't have a delete all function
+        Toast.makeText(requireContext(), "Reset functionality would delete all today's entries", Toast.LENGTH_LONG).show()
     }
 
     //  Update progress + animation
     private fun updateUI() {
-        textProgress.text = "$currentCount / $goal glasses"
-        val fillLevel = currentCount.toFloat() / goal
+        val total = viewModel.todayTotalHydration.value ?: 0
+        val goal = viewModel.userSettings.value?.dailyWaterGoalMl ?: 2000
+        
+        // Convert ml to glasses (assuming 250ml per glass)
+        val glasses = total / 250
+        val goalGlasses = goal / 250
+        
+        textProgress.text = "${total}ml / ${goal}ml"
+        goalText.text = "Goal: ${goalGlasses} glasses (${goal}ml)"
+        
+        val fillLevel = if (goal > 0) {
+            (total.toFloat() / goal).coerceAtMost(1.0f)
+        } else {
+            0f
+        }
+        
         // animate water level fill
         waterFillView.animate().scaleY(fillLevel).setDuration(400).start()
+        
+        // Update progress display
+        val percentage = if (goal > 0) ((total.toFloat() / goal) * 100).toInt() else 0
+        updateProgressDisplay(percentage)
+    }
+    
+    private fun updateProgressDisplay(progress: Int) {
+        progressPercentageText.text = "$progress%"
+        
+        // Update button text based on progress
+        when {
+            progress >= 100 -> {
+                btnAdd.text = "🎉 Goal Reached!"
+                btnAdd.isEnabled = false
+            }
+            progress >= 75 -> {
+                btnAdd.text = "Almost There! 💧"
+                btnAdd.isEnabled = true
+            }
+            else -> {
+                btnAdd.text = "Add Glass 💧"
+                btnAdd.isEnabled = true
+            }
+        }
     }
 
     //  Reminder after 1 minute
@@ -102,9 +179,10 @@ class HydrationFragment : Fragment() {
         val triggerAt = System.currentTimeMillis() + 60_000L
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
 
+        // Update database settings
+        viewModel.updateNotificationsEnabled(true)
         Toast.makeText(ctx, "Hydration reminder set for 1 minute later!", Toast.LENGTH_SHORT).show()
     }
-
 
     //  Cancel reminder
     private fun cancelHydrationReminder() {
@@ -122,6 +200,8 @@ class HydrationFragment : Fragment() {
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
 
+        // Update database settings
+        viewModel.updateNotificationsEnabled(false)
         Toast.makeText(ctx, "Hydration reminder canceled.", Toast.LENGTH_SHORT).show()
     }
 }
