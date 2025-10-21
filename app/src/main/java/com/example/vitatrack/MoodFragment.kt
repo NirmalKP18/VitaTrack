@@ -91,10 +91,20 @@ class MoodFragment : Fragment() {
         }
     }
 
-    // Highlight the selected emoji
+    // Highlight the selected emoji with better visual feedback
     private fun highlightSelectedEmoji(allButtons: List<Button>, selected: Button) {
         for (btn in allButtons) {
-            btn.alpha = if (btn == selected) 1.0f else 0.4f
+            if (btn == selected) {
+                btn.alpha = 1.0f
+                btn.elevation = 12f
+                btn.scaleX = 1.1f
+                btn.scaleY = 1.1f
+            } else {
+                btn.alpha = 0.5f
+                btn.elevation = 4f
+                btn.scaleX = 1.0f
+                btn.scaleY = 1.0f
+            }
         }
     }
 
@@ -113,15 +123,18 @@ class MoodFragment : Fragment() {
         inputNote.text.clear()
         selectedEmoji = null
         
-        // Reset emoji button highlights
+        // Reset emoji button highlights to default state
         val btnHappy = view?.findViewById<Button>(R.id.btnHappy)
         val btnNeutral = view?.findViewById<Button>(R.id.btnNeutral)
         val btnSad = view?.findViewById<Button>(R.id.btnSad)
         val btnAngry = view?.findViewById<Button>(R.id.btnAngry)
         val btnSleepy = view?.findViewById<Button>(R.id.btnSleepy)
         val emojiButtons = listOfNotNull(btnHappy, btnNeutral, btnSad, btnAngry, btnSleepy)
-        if (emojiButtons.isNotEmpty()) {
-            highlightSelectedEmoji(emojiButtons, emojiButtons[0]) // Reset to default state
+        for (btn in emojiButtons) {
+            btn.alpha = 1.0f
+            btn.elevation = 4f
+            btn.scaleX = 1.0f
+            btn.scaleY = 1.0f
         }
         
         Toast.makeText(requireContext(), "Mood saved!", Toast.LENGTH_SHORT).show()

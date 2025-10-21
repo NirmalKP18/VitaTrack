@@ -1,76 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="@color/white">
 
-    <!-- Emoji selector row -->
-    <LinearLayout
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Title Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How are you feeling today?"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Emoji selector grid with cards -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:backgroundTint="@color/white">
 
-        <Button
-            android:id="@+id/btnHappy"
-            android:text="😊"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="5"
+            android:rowCount="1"
+            android:padding="12dp"
+            android:alignmentMode="alignBounds">
 
-        <Button
-            android:id="@+id/btnNeutral"
-            android:text="😐"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btnHappy"
+                android:text="😊"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:textSize="28sp"
+                android:backgroundTint="@color/light_green"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"/>
 
-        <Button
-            android:id="@+id/btnSad"
-            android:text="😢"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btnNeutral"
+                android:text="😐"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:textSize="28sp"
+                android:backgroundTint="@color/light_yellow"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"/>
 
-        <Button
-            android:id="@+id/btnAngry"
-            android:text="😡"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btnSad"
+                android:text="😢"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:textSize="28sp"
+                android:backgroundTint="@color/light_blue"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"/>
 
-        <Button
-            android:id="@+id/btnSleepy"
-            android:text="😴"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnAngry"
+                android:text="😡"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:textSize="28sp"
+                android:backgroundTint="@color/light_red"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"/>
 
-    <!-- Note input -->
+            <Button
+                android:id="@+id/btnSleepy"
+                android:text="😴"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:textSize="28sp"
+                android:backgroundTint="@color/light_purple"
+                android:textColor="@color/black"
+                style="@style/Widget.Material3.Button.ElevatedButton"/>
+
+        </GridLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Note input section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add a note (optional)"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
     <EditText
         android:id="@+id/inputNote"
-        android:hint="Add a short note about your mood"
+        android:hint="What's making you feel this way?"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_height="100dp"
+        android:padding="16dp"
         android:background="@drawable/input_field_bg"
-        android:layout_marginBottom="12dp" />
+        android:gravity="top|start"
+        android:inputType="textMultiLine"
+        android:maxLines="4"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_gray"
+        android:layout_marginBottom="16dp" />
 
     <!-- Save button -->
     <Button
         android:id="@+id/btnSaveMood"
-        android:text="Save Mood"
+        android:text="💾 Save Mood"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:backgroundTint="@color/orange"
         android:textColor="@color/white"
-        android:layout_marginBottom="16dp" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        style="@style/Widget.Material3.Button"/>
+
+    <!-- Mood history title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mood History"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="12dp" />
 
     <!-- RecyclerView for mood history -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerMoodHistory"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:overScrollMode="never" />
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false" />
 
 </LinearLayout>
+</ScrollView>

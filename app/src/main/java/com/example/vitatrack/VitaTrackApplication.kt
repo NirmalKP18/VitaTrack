@@ -3,6 +3,9 @@ package com.example.vitatrack
 import android.app.Application
 import com.example.vitatrack.data.VitaTrackDatabase
 import com.example.vitatrack.repository.VitaTrackRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class VitaTrackApplication : Application() {
     
@@ -19,6 +22,11 @@ class VitaTrackApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        
+        // Clear all demo data from database
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.clearAllData()
+        }
     }
     
     companion object {

@@ -12,4 +12,11 @@
     <color name="primary">#06B5D2</color>         
     <color name="darker_gray">#757575</color>
     <color name="cream_light">#FFF9F0</color>
+    
+    <!-- Mood button colors -->
+    <color name="light_green">#C8E6C9</color>
+    <color name="light_yellow">#FFF9C4</color>
+    <color name="light_blue">#BBDEFB</color>
+    <color name="light_red">#FFCDD2</color>
+    <color name="light_purple">#E1BEE7</color>
 </resources>

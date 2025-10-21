@@ -12,13 +12,15 @@ import com.example.vitatrack.data.Habit
 class HabitAdapter(
     private var habits: MutableList<Habit>,
     private val onDelete: (Int) -> Unit,
-    private val onToggle: (Int, Boolean) -> Unit
+    private val onToggle: (Int, Boolean) -> Unit,
+    private val onEdit: (Int) -> Unit
 ) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
 
     class HabitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val habitName: TextView = view.findViewById(R.id.habitName)
         val habitTime: TextView = view.findViewById(R.id.habitTime)
         val habitCheck: CheckBox = view.findViewById(R.id.habitCheck)
+        val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
         val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
         val streakText: TextView = view.findViewById(R.id.streakText)
     }
@@ -45,6 +47,10 @@ class HabitAdapter(
 
         holder.habitCheck.setOnCheckedChangeListener { _, isChecked ->
             onToggle(position, isChecked)
+        }
+
+        holder.btnEdit.setOnClickListener {
+            onEdit(position)
         }
 
         holder.btnDelete.setOnClickListener {

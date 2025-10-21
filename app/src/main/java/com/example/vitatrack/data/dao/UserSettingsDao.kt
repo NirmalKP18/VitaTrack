@@ -42,4 +42,7 @@ interface UserSettingsDao {
     
     @Query("UPDATE user_settings SET firstLaunch = :firstLaunch WHERE id = 1")
     suspend fun updateFirstLaunch(firstLaunch: Boolean)
+    
+    @Query("DELETE FROM user_settings")
+    suspend fun deleteAllUserSettings()
 }

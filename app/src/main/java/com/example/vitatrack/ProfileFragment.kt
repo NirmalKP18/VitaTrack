@@ -13,8 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.vitatrack.utils.DemoDataSeeder
-
 class ProfileFragment : Fragment() {
 
     private lateinit var profileImage: ImageView
@@ -22,7 +20,6 @@ class ProfileFragment : Fragment() {
     private lateinit var emailInput: EditText
     private lateinit var btnChangePhoto: Button
     private lateinit var btnSaveChanges: Button
-    private lateinit var btnDemoData: Button
     private lateinit var btnLogout: Button
     private var selectedImageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
@@ -40,7 +37,6 @@ class ProfileFragment : Fragment() {
         emailInput = view.findViewById(R.id.emailInput)
         btnChangePhoto = view.findViewById(R.id.btnChangePhoto)
         btnSaveChanges = view.findViewById(R.id.btnSaveChanges)
-        btnDemoData = view.findViewById(R.id.btnDemoData)
         btnLogout = view.findViewById(R.id.btnLogout)
 
         val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -70,13 +66,6 @@ class ProfileFragment : Fragment() {
             editor.apply()
 
             Toast.makeText(requireContext(), "Profile updated!", Toast.LENGTH_SHORT).show()
-        }
-
-        // Demo Data
-        btnDemoData.setOnClickListener {
-            val seeder = DemoDataSeeder(requireContext())
-            seeder.seedDemoData()
-            Toast.makeText(requireContext(), "Demo data loaded! Check other tabs to see the data.", Toast.LENGTH_LONG).show()
         }
 
         // Logout

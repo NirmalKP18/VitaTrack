@@ -51,6 +51,9 @@ interface HydrationDao {
     
     @Query("DELETE FROM hydration_entries WHERE date = :date")
     suspend fun deleteHydrationEntriesByDate(date: String)
+    
+    @Query("DELETE FROM hydration_entries")
+    suspend fun deleteAllHydrationEntries()
 }
 
 data class HydrationTrend(

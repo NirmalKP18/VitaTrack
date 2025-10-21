@@ -93,6 +93,14 @@ class VitaTrackRepository(
     suspend fun updateTheme(theme: String) = userSettingsDao.updateTheme(theme)
     suspend fun updateFirstLaunch(firstLaunch: Boolean) = userSettingsDao.updateFirstLaunch(firstLaunch)
     
+    // Clear all data operations
+    suspend fun clearAllData() {
+        habitDao.deleteAllHabits()
+        moodDao.deleteAllMoodEntries()
+        hydrationDao.deleteAllHydrationEntries()
+        userSettingsDao.deleteAllUserSettings()
+    }
+    
     // Utility functions
     fun getCurrentDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     fun getCurrentDateTime(): String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())

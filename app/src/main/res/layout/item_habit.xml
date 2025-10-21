@@ -53,6 +53,16 @@
 
         </LinearLayout>
 
+        <!-- Edit habit button -->
+        <ImageButton
+            android:id="@+id/btnEdit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Edit habit"
+            android:padding="8dp" />
+
         <!-- Delete habit button -->
         <ImageButton
             android:id="@+id/btnDelete"

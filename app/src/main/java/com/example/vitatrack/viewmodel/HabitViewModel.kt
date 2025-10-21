@@ -134,6 +134,20 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     
+    fun updateHabit(habit: Habit) {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                repository.updateHabit(habit)
+                loadTodayHabits() // Refresh the list
+            } catch (e: Exception) {
+                _errorMessage.value = "Failed to update habit: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    
     fun deleteHabit(habit: Habit) {
         viewModelScope.launch {
             try {

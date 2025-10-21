@@ -39,7 +39,7 @@ class HabitFragment : Fragment() {
         progressText = view.findViewById(R.id.progressText)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = HabitAdapter(mutableListOf(), ::deleteHabit, ::toggleHabit)
+        adapter = HabitAdapter(mutableListOf(), ::deleteHabit, ::toggleHabit, ::editHabit)
         recyclerView.adapter = adapter
 
         setupObservers()
@@ -149,6 +149,59 @@ class HabitFragment : Fragment() {
         if (habit != null) {
             viewModel.toggleHabitCompletion(habit)
         }
+    }
+
+    // --------------------------------------------------
+    //  Edit habit
+    // --------------------------------------------------
+    private fun editHabit(position: Int) {
+        val habit = adapter.getHabitAt(position) ?: return
+        
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_habit, null)
+
+        val inputName = dialogView.findViewById<EditText>(R.id.inputHabitName)
+        val btnPickTime = dialogView.findViewById<Button>(R.id.btnPickTime)
+        val timeText = dialogView.findViewById<TextView>(R.id.selectedTime)
+
+        // Pre-fill with existing values
+        inputName.setText(habit.name)
+        var selectedTime = habit.targetTime
+        timeText.text = "Selected: $selectedTime"
+
+        // Pick time
+        btnPickTime.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            TimePickerDialog(requireContext(), { _, h, m ->
+                val formatted = String.format(
+                    "%02d:%02d %s",
+                    if (h % 12 == 0) 12 else h % 12,
+                    m,
+                    if (h < 12) "AM" else "PM"
+                )
+                selectedTime = formatted
+                timeText.text = "Selected: $formatted"
+            }, hour, minute, false).show()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Edit Habit")
+            .setView(dialogView)
+            .setPositiveButton("Update") { _, _ ->
+                val name = inputName.text.toString().trim()
+                if (name.isNotEmpty() && selectedTime.isNotEmpty()) {
+                    val updatedHabit = habit.copy(name = name, targetTime = selectedTime)
+                    viewModel.updateHabit(updatedHabit)
+                    Toast.makeText(requireContext(), "Habit updated successfully!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     // --------------------------------------------------

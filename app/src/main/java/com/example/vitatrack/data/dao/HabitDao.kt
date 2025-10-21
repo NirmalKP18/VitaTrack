@@ -40,6 +40,9 @@ interface HabitDao {
     @Query("DELETE FROM habits WHERE id = :id")
     suspend fun deleteHabitById(id: Long)
     
+    @Query("DELETE FROM habits")
+    suspend fun deleteAllHabits()
+    
     @Query("UPDATE habits SET isCompleted = :isCompleted, completedDate = :completedDate, streak = :streak, totalCompletions = :totalCompletions WHERE id = :id")
     suspend fun updateHabitCompletion(id: Long, isCompleted: Boolean, completedDate: String?, streak: Int, totalCompletions: Int)
     
