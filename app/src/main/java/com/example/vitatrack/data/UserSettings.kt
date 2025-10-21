@@ -9,6 +9,8 @@ data class UserSettings(
     val id: Int = 1, // Single row for user settings
     val username: String = "Guest",
     val email: String = "",
+    val profileImageUri: String = "", // URI of profile picture
+    val bio: String = "", // User bio/description
     val dailyWaterGoalMl: Int = 2000,
     val reminderIntervalMinutes: Int = 120, // 2 hours default
     val notificationsEnabled: Boolean = true,

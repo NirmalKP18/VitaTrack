@@ -22,6 +22,15 @@ interface UserSettingsDao {
     @Query("UPDATE user_settings SET username = :username WHERE id = 1")
     suspend fun updateUsername(username: String)
     
+    @Query("UPDATE user_settings SET email = :email WHERE id = 1")
+    suspend fun updateEmail(email: String)
+    
+    @Query("UPDATE user_settings SET profileImageUri = :uri WHERE id = 1")
+    suspend fun updateProfileImage(uri: String)
+    
+    @Query("UPDATE user_settings SET bio = :bio WHERE id = 1")
+    suspend fun updateBio(bio: String)
+    
     @Query("UPDATE user_settings SET dailyWaterGoalMl = :goal WHERE id = 1")
     suspend fun updateDailyWaterGoal(goal: Int)
     

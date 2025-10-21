@@ -17,7 +17,7 @@ import com.example.vitatrack.data.dao.UserSettingsDao
         HydrationEntry::class,
         UserSettings::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

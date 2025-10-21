@@ -1,29 +1,61 @@
 package com.example.vitatrack
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.example.vitatrack.viewmodel.ProfileViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+
 class ProfileFragment : Fragment() {
 
     private lateinit var profileImage: ImageView
-    private lateinit var usernameInput: EditText
-    private lateinit var emailInput: EditText
-    private lateinit var btnChangePhoto: Button
+    private lateinit var usernameInput: TextInputEditText
+    private lateinit var emailInput: TextInputEditText
+    private lateinit var bioInput: TextInputEditText
+    private lateinit var btnChangePhoto: FloatingActionButton
     private lateinit var btnSaveChanges: Button
     private lateinit var btnLogout: Button
     private var selectedImageUri: Uri? = null
-    private val PICK_IMAGE_REQUEST = 1
-    private val PREFS_NAME = "user_prefs"
+    
+    private val viewModel: ProfileViewModel by viewModels()
+
+    // Modern image picker launcher
+    private val imagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                // Take persistable URI permission
+                try {
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: SecurityException) {
+                    // Some URIs don't support persistable permissions
+                    e.printStackTrace()
+                }
+                
+                selectedImageUri = uri
+                loadProfileImage(uri.toString())
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,54 +67,105 @@ class ProfileFragment : Fragment() {
         profileImage = view.findViewById(R.id.profileImage)
         usernameInput = view.findViewById(R.id.usernameInput)
         emailInput = view.findViewById(R.id.emailInput)
+        bioInput = view.findViewById(R.id.bioInput)
         btnChangePhoto = view.findViewById(R.id.btnChangePhoto)
         btnSaveChanges = view.findViewById(R.id.btnSaveChanges)
         btnLogout = view.findViewById(R.id.btnLogout)
 
-        val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        usernameInput.setText(prefs.getString("username", "Guest User"))
-        emailInput.setText(prefs.getString("email", "Not available"))
+        // Initialize user settings if not exists
+        viewModel.initializeUserSettings()
+        
+        setupObservers()
+        setupClickListeners()
 
-        val savedUri = prefs.getString("profile_uri", null)
-        if (savedUri != null) profileImage.setImageURI(Uri.parse(savedUri))
-
+        return view
+    }
+    
+    private fun setupObservers() {
+        // Observe user settings
+        viewModel.userSettings.observe(viewLifecycleOwner, Observer { settings ->
+            settings?.let {
+                usernameInput.setText(it.username)
+                emailInput.setText(it.email)
+                bioInput.setText(it.bio)
+                
+                if (it.profileImageUri.isNotEmpty()) {
+                    loadProfileImage(it.profileImageUri)
+                }
+            }
+        })
+        
+        // Observe success messages
+        viewModel.successMessage.observe(viewLifecycleOwner, Observer { message ->
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearMessages()
+            }
+        })
+        
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearMessages()
+            }
+        })
+    }
+    
+    private fun setupClickListeners() {
         // Change photo
         btnChangePhoto.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+            openImagePicker()
         }
 
         // Save profile updates
         btnSaveChanges.setOnClickListener {
-            val username = usernameInput.text.toString().trim()
-            val email = emailInput.text.toString().trim()
-
-            val editor = prefs.edit()
-            editor.putString("username", username)
-            editor.putString("email", email)
-            if (selectedImageUri != null)
-                editor.putString("profile_uri", selectedImageUri.toString())
-            editor.apply()
-
-            Toast.makeText(requireContext(), "Profile updated!", Toast.LENGTH_SHORT).show()
+            saveProfile()
         }
 
         // Logout
         btnLogout.setOnClickListener {
-            prefs.edit().clear().apply()
             Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
             requireActivity().finish()
         }
-
-        return view
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            selectedImageUri = data?.data
-            profileImage.setImageURI(selectedImageUri)
+    
+    private fun openImagePicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
         }
+        imagePickerLauncher.launch(intent)
+    }
+    
+    private fun loadProfileImage(uriString: String) {
+        try {
+            Glide.with(this)
+                .load(Uri.parse(uriString))
+                .transform(CircleCrop())
+                .placeholder(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher_round)
+                .into(profileImage)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            profileImage.setImageResource(R.mipmap.ic_launcher_round)
+        }
+    }
+    
+    private fun saveProfile() {
+        val username = usernameInput.text.toString().trim()
+        val email = emailInput.text.toString().trim()
+        val bio = bioInput.text.toString().trim()
+        
+        if (username.isEmpty()) {
+            Toast.makeText(requireContext(), "Please enter a username", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val imageUri = selectedImageUri?.toString() ?: viewModel.userSettings.value?.profileImageUri ?: ""
+        
+        viewModel.updateProfile(username, email, bio, imageUri)
     }
 }
