@@ -23,10 +23,8 @@ class VitaTrackApplication : Application() {
         super.onCreate()
         instance = this
         
-        // Clear all demo data from database
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.clearAllData()
-        }
+        // Note: Removed automatic database clearing to preserve user data
+        // Database is now only cleared when user explicitly requests it
     }
     
     companion object {

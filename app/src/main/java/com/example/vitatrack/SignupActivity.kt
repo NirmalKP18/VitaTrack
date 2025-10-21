@@ -7,6 +7,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.vitatrack.data.UserSettings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +41,7 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Save user data
+            // Save user data to SharedPreferences for authentication
             val prefs = getSharedPreferences("user_prefs", MODE_PRIVATE)
             val editor = prefs.edit()
             editor.putString("email", email)
@@ -44,9 +49,29 @@ class SignupActivity : AppCompatActivity() {
             editor.putString("password", password)
             editor.apply()
 
-            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            // Save user data to database for profile
+            val repository = (application as VitaTrackApplication).repository
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val userSettings = UserSettings(
+                        username = username,
+                        email = email
+                    )
+                    repository.insertUserSettings(userSettings)
+                    
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@SignupActivity, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@SignupActivity, "Account created! Please login.", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+                        finish()
+                    }
+                }
+            }
         }
 
         loginText.setOnClickListener {
